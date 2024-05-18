@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generative AI Chatbot</title>
+    <!-- Script Generative AI SDK của Google -->
+    <script src="https://unpkg.com/@google/generative-ai"></script>
+    <script>
+        // Mã JavaScript để tương tác với Generative AI SDK
+        const {
+            GoogleGenerativeAI,
+            HarmCategory,
+            HarmBlockThreshold,
+        } = window["@google/generative-ai"]; // Lưu ý: Sử dụng window["@google/generative-ai"] vì chúng tôi sử dụng URL CDN
+
+        const apiKey = "AIzaSyAjJltVZhW9Y1Aro7yj1X3CkGGcvi3rZ2o"; // Thay YOUR_GEMINI_API_KEY bằng API key của bạn
+        const genAI = new GoogleGenerativeAI(apiKey);
+
+        // Lấy mô hình chatbot
+        const model = genAI.getGenerativeModel({
+            model: "gemini-1.5-pro-latest",
+        });
+
+        // Cấu hình sinh tin nhắn
+        const generationConfig = {
+            temperature: 1,
+            topP: 0.95,
+            topK: 64,
+            maxOutputTokens: 8192,
+            responseMimeType: "text/plain",
+        };
+
+        // Cấu hình an toàn
+        const safetySettings = [
+            {
+                category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+                threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+            },
+            {
+                category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+                threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+            },
+            {
+                category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+                threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+            },
+            {
+                category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+                threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+            },
+        ];
+
+        // Bắt đầu phiên trò chuyện
+        const chatSession = model.startChat({
+            generationConfig,
+            safetySettings,
+            history: [], // Bắt đầu với một lịch sử trống
+        });
+
+        // Hàm gửi tin nhắn
+        async function sendMessage() {
+            const userInput = document.getElementById("user-input").value;
+            const result = await chatSession.sendMessage(userInput);
+            const responseText = result.response.text();
+            document.getElementById("chat-history").innerHTML += `<div><strong>You:</strong> ${userInput}</div>`;
+            document.getElementById("chat-history").innerHTML += `<div><strong>Chatbot:</strong> ${responseText}</div>`;
+        }
+    </script>
+</head>
+<body>
+    <h1>Generative AI Chatbot</h1>
+    <div id="chat-history">
+        <!-- Khu vực để hiển thị lịch sử trò chuyện -->
+    </div>
+    <input type="text" id="user-input" placeholder="Type your message...">
+    <button onclick="sendMessage()">Send</button>
+</body>
+</html>

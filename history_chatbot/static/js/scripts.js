@@ -7,6 +7,57 @@
 // Scripts
 // 
 
+document.addEventListener('DOMContentLoaded', function() {
+    // Lấy danh sách các mục trong mục lục
+    const tocItems = document.querySelectorAll('#toc .nav-link');
+    // Lặp qua từng mục trong mục lục và gắn sự kiện cuộn
+    tocItems.forEach(function(item) {
+        item.addEventListener('click', function(e) {
+            e.preventDefault(); // Ngăn chặn hành vi mặc định của thẻ a
+
+            // Lấy ID của phần nội dung tương ứng với mục mục lục được nhấp
+            const targetId = this.getAttribute('href').substring(1);
+            const targetElement = document.getElementById(targetId);    
+            console.log(targetId)
+            // Cuộn trang đến phần nội dung tương ứng
+            if (targetElement) {
+                console.log("---"+targetElement)
+                targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    });
+
+    // document.getElementById('content').addEventListener('scroll', function() {
+    //     // Lấy vị trí hiện tại của thanh cuộn
+    //     const scrollPosition = this.scrollTop;
+
+    //     // Lấy tất cả các mục mục lục
+    //     const tocItems = document.querySelectorAll('#toc .nav-item a');
+        
+    //     // Lặp qua từng phần tử nội dung và kiểm tra xem nó có nằm trong vùng nhìn thấy không
+    //     document.querySelectorAll('#content > h4, #content > h5, #content > h6').forEach(function(section) {
+    //         const sectionTop = section.offsetTop;
+    //         const sectionHeight = section.offsetHeight;
+
+    //         if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+    //             // Lấy ID của phần tử nội dung hiện tại
+    //             const sectionId = section.getAttribute('id');
+
+    //             // Làm cho mục mục lục tương ứng được in đậm
+    //             const activeTocItem = document.querySelector(`#toc .nav-item a[href="#${sectionId}"]`);
+    //             if (activeTocItem) {
+    //                 // Xóa lớp 'active' từ tất cả các mục mục lục
+    //                 tocItems.forEach(function(item) {
+    //                     item.classList.remove('active');
+    //                 });
+    //                 // Thêm lớp 'active' cho mục mục lục tương ứng
+    //                 activeTocItem.classList.add('active');
+    //             }
+    //         }
+    //     });
+    // });
+});
+
 window.addEventListener('DOMContentLoaded', event => {
 
     // Navbar shrink function

@@ -1,200 +1,296 @@
-<!DOCTYPE html>
+
+{% extends 'layout.html' %}
 {% load static %}
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
-    <title>Agency - Start Bootstrap Theme</title>
-    <!-- Favicon-->
-    <link rel="icon" type="image/x-icon" href="{% static 'assets/favicon.ico' %}" />
-    <!-- Font Awesome icons (free version)-->
-    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-    <!-- Google fonts-->
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
-    <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css" />
-    <!-- Core theme CSS (includes Bootstrap)-->
-    <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
-</head>
-{% block styles %}
-<style>
-    body, html {
-      height: 100%;
-    }
-
-    .messages-box {
-      flex: 1;
-      overflow-y: auto;
-    }
-
-    .messages-list {
-      padding-left: 0;
-    }
-
-    .message {
-      margin-bottom: 15px;
-      list-style: none;
-    }
-
-    .message-text {
-      padding: 10px;
-      border-radius: 5px;
-    }
-
-    .sent {
-      background-color: #dcf8c6;
-      align-self: flex-end;
-    }
-
-    .received {
-      background-color: #f1f0f0;
-      align-self: flex-start;
-    }
-
-    .message-form {
-      display: flex;
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      padding: 10px;
-      background-color: #f8f9fa;
-    }
-
-    .message-input {
-      flex: 1;
-      border-radius: 0;
-      border-right: none;
-    }
-
-    .btn-send {
-      border-radius: 0;
-    }
-
-    .chat-container {
-      height: 100%;
-      display: fixed;
-      flex-direction: column;
-      height: 100vh;
-    }
-  </style>
+{% load l10n %}
+{% load custom_filters %}
+{% block title %}
+    Book
 {% endblock %}
-<body id="page-top">
-  <div class="chat-container fixed-bottom">
-  <div class="card flex-grow-1">
-    <div class="card-header bg-primary text-white">Chat</div>
-    {% if user.is_authenticated %}
-    <div class="card-header bg-primary text-white"><b>Welcome, {{user.username}}</b>   <a style="color: yellow;" href="logout">Logout</a></div>
-    {% else %}
-    <div class="card-header bg-primary text-white"><a style="color: yellow" href="login">Login</a>   <a style="color: yellow;" href="register">Register</a></div>
-    {% endif %}
-    <div class="card-body messages-box">
-      
-      <ul class="list-unstyled messages-list">
-        {% for chat in chats %}
-          {% if chat.user == request.user %}
-            <li class="message sent">
-          <div class="message-text">
-            <div class="message-sender">
-              <b>You</b>
+{% block content %}
+<div class="container" style="margin-top: 4rem;height: 100vh">
+    <div class="row fixed-bottom py-3 px-5 bg-white" style="
+    top: 4rem; z-index: 0;bottom:0">
+        <div class="col-md-3  rounded"  style="height:100%">
+            <div class="sidebar-his bg-light row static-top align-content-start px-2" style="top:0;height:100%;overflow: auto;">
+                <div class="row sticky-top bg-light py-3 mx-0" style="top:0; overflow: auto; height:fit-content" >
+                    <div class="col-6">Gần đây</div>
+                    <div class="col-6 d-flex justify-content-end align-items-center">
+                        <a class="del-his-link nav-link"><i class="fa fa-bars" aria-hidden="true"></i></a>
+                    </div>
+                    <div class="del-his-box row mx-0 pe-0 d-none">
+                        <div class="col-12 d-flex justify-content-end align-items-center" style="font-size:small">
+                            <a class="delete-chat-all chat-link">Xoá tất cả&nbsp;&nbsp;<i class="fa fa-trash" aria-hidden="true"></i></a>
+                        </div>
+                        <div class="col-12 d-flex justify-content-end align-items-center" style="font-size:small" >
+                            <a class="delete-chat-item chat-link">Xoá &nbsp;&nbsp;<i class="fa fa-trash" aria-hidden="true"></i></a>
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="chat-box">
+                    {% for chat in chats %}
+                    <a class="his-item nav-link">
+                        <div class="col-12 px-3 py-2 rounded-4 border-bottom">
+                            <p class="m-0 fw-lighter" style="font-size:small">{{chat.created_at|vietnamese_weekday}}, {{ chat.created_at|date:"d-m-Y  |  H:i" }}</p>
+                            <p class="message m-0 fw-normal text-truncate" >{{ chat.message }}</p>
+                            <p class="response m-0 fw-normal text-truncate d-none" >{{ chat.response }}</p>
+                            <p class="id m-0 fw-normal text-truncate d-none" >{{ chat.id }}</p>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
             </div>
-            <div class="message-content">
-              {{chat.message}}
-            </div>
-          </div>
-        </li>
-
-        <li class="message received">
-          <div class="message-text">
-            <div class="message-sender">
-              <b>AI Chatbot</b>
-            </div>
-            <div class="message-content">
-              {{chat.response}}
-            </div>
-          </div>
-        </li>
-
-          {% endif %}
-        {% endfor %}
+        </div>
+        <div class="col-md-9 rounded"style="height:100%">
+            <div id="message-box" class="row static align-content-start mb-3 justify-content-center" style="height:100%;overflow-y: scroll; padding-bottom: 4rem;">
         
-      </ul>
-      
+                <div class="col-md-12 py-3 sticky-top bg-white" style="height:fit-content; z-index: 2000;">HistoryChat</div>
+                {% for chat in chats|slice:":10"|reverse_list %}
+                <div class="message-sent col-md-12 col-xl-10 mt-3 align-content-start">
+                    <div class="row ">
+                        <div class="col-3"></div>
+                        <div class="col-7 p-0 d-flex justify-content-end">
+                            <div class="p-3 bg-light m-0 rounded-5">
+                                {{chat.message}}
+                            </div>
+                        </div>
+                        <div class="col-1 p-0 d-flex align-items-start
+                        justify-content-center">
+                            <button class="rounded-circle bg-primary border-0" style="width: 40px;height:40px">T</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="message-receive col-md-12 col-xl-10 mt-3 align-content-start">
+                    <div class="row justify-content-center ">
+                        <div class="col-1 p-0 d-flex align-items-start
+                        justify-content-center">
+                            <button class="rounded-circle text-primary border-0 bg-dark" style="width: 40px;height:40px">AI</button>
+                        </div>
+                        <div class="col-9 p-0 rounded p-3">
+                            {{chat.response}}
+                        </div>
+                        <div class="col-2"></div>
+                    </div>
+                </div>
+                {% endfor %}
+                
+                <div class="row fixed-bottom ms-3">
+                    <div class="col-3"></div>
+                    <div class="col-9 bg-white pb-2">
+                        <div class="loader chat-load d-none">
+                            <div class="bar bar1"></div>
+                            <div class="bar bar2"></div>
+                            <div class="bar bar3"></div>
+                        </div>
+                        <form class="row align-content-start rounded-pill bg-light justify-content-center" style="width:70%; margin:auto">
+                            <div class="col-11 p-0">
+                                <input id="input-chat" class="bg-transparent border-0 form-control py-3 rounded-pill" placeholder="Tin nhắn HistoryChat">
+                            </div>
+                            <div class="col-1 p-0 d-flex align-items-center
+                            justify-content-center">
+                                <button id='sent-btn' type="submit" class="rounded-circle btn bg-dark text-primary border-0" style="width: 40px;height:40px"><i class="fa fa-arrow-up" aria-hidden="true"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                </div>
+
+            </div>
+        </div>
+     
     </div>
-    <br><br>
-    <br><br>
-    <br><br>
-  </div>
-  <form class="message-form">
-    {%csrf_token%}
-    <div class="input-group">
-      <input type="text" class="form-control message-input" placeholder="Type your message...">
-      <div class="input-group-append">
-        <button type="submit" class="btn btn-primary btn-send">Send</button>
-      </div>
-    </div>
-  </form>
 </div>
 
 <script>
-  const messagesList = document.querySelector('.messages-list');
-  const messageForm = document.querySelector('.message-form');
-  const messageInput = document.querySelector('.message-input');
+    const message_box = document.querySelector('#message-box')
+    const sent_bth = document.querySelector('#sent-btn')
+    const input_chat = document.querySelector('#input-chat')
+    const chat_load = document.querySelector('.chat-load')
+    const chat_box = document.querySelector('.chat-box')
+    const item_his = document.querySelectorAll('.his-item')
+    const del_his_link  = document.querySelector('.del-his-link')
+    const del_his_box  = document.querySelector('.del-his-box')
+    const delete_chat_item = document.querySelector('.delete-chat-item')
+    const delete_chat_all = document.querySelector('.delete-chat-all')
 
-  messageForm.addEventListener('submit', (event) => {
-    event.preventDefault();
 
-    const message = messageInput.value.trim();
-    if (message.length === 0) {
-      return;
+    function scrollToBottom() {
+        var messageBox = document.getElementById('message-box');
+        messageBox.scrollTop = messageBox.scrollHeight;
+    }
+    document.addEventListener("DOMContentLoaded", function() {
+        scrollToBottom();
+    });
+
+    del_his_link.addEventListener("click", function(event){
+        event.preventDefault();
+        if (!del_his_box.classList.contains('d-none')) {
+            del_his_box.classList.add('d-none')
+        }else{
+            del_his_box.classList.remove('d-none')
+        }
+    })
+
+    delete_chat_item.addEventListener("click", function(event){
+        event.preventDefault();
+        let item_his = document.querySelectorAll('.his-item')
+        if (!delete_chat_item.classList.contains('text-danger')){
+            delete_chat_item.classList.add('text-danger');
+            item_his.forEach(function(item){
+                item.classList.add('chat-link');
+                let id = item.querySelector(".id");
+                item.classList.remove('nav-link');
+                item.addEventListener("click", function(event){
+                    delete_chat_item_fn(id.textContent);
+                    reloadElement('.chat-box');
+                })
+            });
+        }else{
+            delete_chat_item.classList.remove('text-danger');
+            item_his.forEach(function(item){
+                item.classList.remove('chat-link');
+                item.classList.add('nav-link');
+                reloadElement('.chat-box');
+            });
+
+        }
+    })
+
+    function delete_chat_item_fn(id_chat){
+        fetch(`${id_chat}/delete`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({
+            'csrfmiddlewaretoken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            'message': id_chat
+            })
+        })
     }
 
-    const messageItem = document.createElement('li');
-    messageItem.classList.add('message', 'sent');
-    messageItem.innerHTML = `
-        <div class="message-text">
-            <div class="message-sender">
-                <b>You</b>
-            </div>
-            <div class="message-content">
-                ${message}
-            </div>
-        </div>`;
-    messagesList.appendChild(messageItem);
 
-    messageInput.value = '';
-
-    fetch('chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({
-        'csrfmiddlewaretoken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-        'message': message
-      })
+    item_his.forEach(function(item){
+        item.addEventListener("click", function(event){
+            if (item.classList.contains('nav-link')) {
+                event.preventDefault();
+                let message = this.querySelector(".message")
+                let response = this.querySelector(".response")
+                let message_item = create_message_item(message.textContent)
+                let response_item = create_response_item(response.textContent)
+                message_box.appendChild(message_item)
+                message_box.appendChild(response_item)
+                scrollToBottom()
+            }
+        })
     })
-      .then(response => {
-        if (!response.ok) {
-          const response = data.response;
+    
+    document.addEventListener("DOMContentLoaded", function(){
+        sent_bth.addEventListener('click', function(){
+            event.preventDefault();
+            let message = input_chat.value.trim();
+            input_chat.value ='';
+            if (message.length === 0) {
+                return;
+            }
+
+            if (message){
+                chat_load.classList.remove('d-none')
+                let message_item = create_message_item(message)
+                message_box.appendChild(message_item)  
+                
+                fetch(`${baseUrl}/books/search/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({
+                    'csrfmiddlewaretoken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                    'message': message
+                    })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        let context = data['data'][0]
+                        fetch('chat', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body: new URLSearchParams({
+                              'csrfmiddlewaretoken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                              'message': JSON.stringify({'query': message, 'context': context})
+                            })
+                          })
+                            .then(response => response.json())
+                            .then(data => {
+                                chat_load.classList.add("d-none")
+                                let message_response = create_response_item(data.response)
+
+                                let his_item = document.createElement('a')
+                                his_item.classList.add('his-item', 'nav-link')
+                                his_item.innerHTML=`
+                                <div class="col-12 px-3 py-2 rounded-4 border-bottom">
+                                    <p class="m-0 fw-lighter" style="font-size:small">{% now "l, d-m-Y  |  H:i" %}</p>
+                                    <p class="m-0 fw-normal text-truncate ">${message}</p>
+                                    <p class="response m-0 fw-normal text-truncate d-none" >${data.response}</p>
+                                    <p class="id m-0 fw-normal text-truncate d-none" >${ data.id }</p>
+                                </div>`
+                                chat_box.insertBefore(his_item, chat_box.childNodes[1]);
+                                console.log(his_item)
+                                message_box.appendChild(message_response);
+                                reloadElement('.chat-box')
+                            }) 
+                    });
+            }
+        })
+    })
+
+    function create_message_item(message) {
+        let message_item = document.createElement('div')
+            message_item.classList.add("message-sent", "col-md-12", "col-xl-10", "mt-3", "align-content-start")
+            message_item.innerHTML = `
+            <div class="row ">
+                <div class="col-3"></div>
+                <div class="col-7 p-0 d-flex justify-content-end">
+                    <div class="p-3 bg-light m-0 rounded-5">${message}</div>
+                </div>
+                <div class="col-1 p-0 d-flex align-items-start
+                justify-content-center">
+                    <button class="rounded-circle bg-primary border-0" style="width: 40px;height:40px">T</button>
+                </div>
+            </div>`
+        return message_item
+    }
+    function create_response_item(response) {
+        let message_response = document.createElement('div')
+            message_response.classList.add("message-receive", "col-md-12", "col-xl-10", "mt-3", "align-content-start")
+            message_response.innerHTML = `
+            <div class="row justify-content-center ">
+                <div class="col-1 p-0 d-flex align-items-start
+                justify-content-center">
+                    <button class="rounded-circle text-primary border-0 bg-dark" style="width: 40px;height:40px">AI</button>
+                </div>
+                <div class="col-9 p-0 rounded p-3">
+                    ${response}
+                </div>
+                <div class="col-2"></div>
+            </div>`
+        return message_response
+    }
+    // Gọi hàm này khi bạn muốn làm mới phần tử
+    function reloadElement(selector) {
+    $.ajax({
+        url: window.location.href,  // URL của trang hiện tại
+        type: 'GET',
+        success: function(response) {
+            // Tìm lại phần tử bằng cách sử dụng selector và thay thế nội dung của nó
+            var refreshedContent = $(response).find(selector);
+            $(selector).replaceWith(refreshedContent);
+        },
+        error: function(xhr, status, error) {
+            console.error('Error refreshing element:', error);
         }
-        return response.json()
-      })
-      .then(data => {
-        const response = data.response;
-        const messageItem = document.createElement('li');
-        messageItem.classList.add('message', 'received');
-        messageItem.innerHTML = `
-        <div class="message-text">
-            <div class="message-sender">
-              <b>AI Chatbot</b>
-            </div>
-            <div class="message-content">
-                ${response}
-            </div>
-        </div>
-          `;
-        messagesList.appendChild(messageItem);
-      });
-  });
+    });
+}
+
 
 </script>
+
+{% endblock %}
+
+

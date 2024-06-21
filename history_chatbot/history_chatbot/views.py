@@ -1,8 +1,8 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from books.models import *
-import json
-
+from chatbot.models import *
+from django.contrib.auth.decorators import login_required
 
 def homepage(request):
     books = Grade.objects.all()
@@ -21,8 +21,9 @@ def read_book(request, grade):
         return render(request, 'book.html', context)
     else:
         return HttpResponse("error")
+@login_required(login_url="/users/signin")
 def chatbot(request):
-
-    return render(request, 'chatbot.html')
+    chats = Chat.objects.filter(user=request.user).order_by('-created_at')
+    return render(request, 'chatbot.html', {"chats": chats})
 
     

@@ -1,0 +1,174 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block title %}
+  Do Exam
+{% endblock %}
+
+{% block content %}
+  <div class="container" style="margin-top: 6rem;overflow: auto; height: 100vh">
+    <form id="quizForm">
+        <input hidden name="exam" value="{{exam.id}}">
+        <input hidden name="user" value="{{user.username}}">
+        
+    <div class="row static-top" style="height: 100vh;overflow: auto;top: 6rem">
+      <div class="col-md-3 sticky-top bg-light" style="height: 100vh;overflow: auto;
+        top: 0">
+        <div class="row">
+          <div class="col-12 sticky-top py-3 bg-light header-quiz">
+            <h6 class="section-heading text-center">{{exam.name}}</h6>
+          </div>
+          <div class="col-12 " >
+            <h6>Thời gian còn lại: </h6>
+            <div class="timer" id="countdown" style="font-size: 2em;">40:00</div>
+          </div>
+          <div class="col-12">
+            <div class="row px-3 mt-3 justify-content-center">
+            {% for question in exam.question_set.all %}
+              <a class="nav-link col-2 border d-flex justify-content-center m-1 rounded" href="#question{{forloop.counter}}" id="idx_question{{question.id}}">
+                  {{ forloop.counter }}
+              </a>
+            {% endfor %}
+            </div>
+            <div class="row mt-3">
+                <button type="button" class="btn btn-success col-12" id="submitButton">Nộp bài</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-9 sticky-top" style="height: 100vh;overflow: auto;">
+        <div class="row noti-do-exam mt-6">
+            <div class="col-3"></div>
+            <div class="col-7" style=""><br><br><br><br><br><br><br><br>
+                <div>Sẵn sàng để bắt đầu làm kiểm tra? Để đạt được kết quả tốt nhất, bạn cần dành ra 40 phút cho bài test này.</div>
+                <div>Lưu ý: Không thoát trang, bài làm sẽ tự động lưu kết quả khi hết thời gian</div>
+                <br>
+                <button class=" col-12 btn btn-success mx-auto" id="startButton">Bắt đầu</button>
+            </div><br><br><br><br><br><br><br><br>
+        </div>
+        
+        <div class="col-12 content-exam d-none">
+          <ul class="px-3">
+            <li class="row py-3 mb-3">
+              {% for question in exam.question_set.all %}
+                <div class="col-12">
+                  <h6 id="question{{forloop.counter}}">Câu {{ forloop.counter }}: {{ question.question }}</h6>
+                </div>
+                <div class="col-12 mb-4">
+                  <div class="form-check py-2 ms-4">
+                    <input class="form-check-input" type="radio" name="none_choice" id="none_choice_id" value="none" checked="checked" />
+                    <label class="form-check-label" for="none_choice"></label>
+                  </div>
+
+                  <div class="form-check py-2 ms-4">
+                    <input class="form-check-input" type="radio" name="question_{{ question.id }}" id="question_{{ question.id }}_choice_1" value="{{ question.choice_1 }}" />
+                    <label class="form-check-label" for="question_{{ question.id }}_choice_1">A. {{ question.choice_1 }}</label>
+                  </div>
+                  <div class="form-check py-2 ms-4">
+                    <input class="form-check-input" type="radio" name="question_{{ question.id }}" id="question_{{ question.id }}_choice_2" value="{{ question.choice_2 }}" />
+                    <label class="form-check-label" for="question_{{ question.id }}_choice_2">B. {{ question.choice_2 }}</label>
+                  </div>
+                  <div class="form-check py-2 ms-4">
+                    <input class="form-check-input" type="radio" name="question_{{ question.id }}" id="question_{{ question.id }}_choice_3" value="{{ question.choice_3 }}" />
+                    <label class="form-check-label" for="question_{{ question.id }}_choice_3">C. {{ question.choice_3 }}</label>
+                  </div>
+                  <div class="form-check py-2 ms-4">
+                    <input class="form-check-input" type="radio" name="question_{{ question.id }}" id="question_{{ question.id }}_choice_4" value="{{ question.choice_4 }}" />
+                    <label class="form-check-label" for="question_{{ question.id }}_choice_4">D. {{ question.choice_4 }}</label>
+                  </div>
+                </div>
+              {% endfor %}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    </form>
+  </div>
+  <script>
+    content_exam = document.querySelector('.content-exam')
+    noti_do_exam = document.querySelector('.noti-do-exam')
+
+    document.getElementById('startButton').addEventListener('click', () => {
+        event.preventDefault();
+        content_exam.classList.remove('d-none')
+        noti_do_exam.classList.add('d-none')
+        // Set the countdown time to 40 minutes
+        let time = 40 * 60; // 40 minutes in seconds
+        const countdownElement = document.getElementById('countdown');
+
+        // Update the countdown every second
+        const interval = setInterval(() => {
+            // Calculate minutes and seconds
+            const minutes = Math.floor(time / 60);
+            const seconds = time % 60;
+
+            // Format the time string
+            const formattedTime = `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+            // Display the result in the element
+            countdownElement.textContent = formattedTime;
+
+            // Decrease the time
+            time--;
+
+            // If the countdown is finished, stop the interval
+            if (time < 0) {
+                clearInterval(interval);
+                countdownElement.textContent = 'Time\'s up!';
+            }
+        }, 1000);
+    }, { once: true });
+
+
+    document.getElementById('submitButton').addEventListener('click', () => {
+        event.preventDefault();
+        const form = document.getElementById('quizForm');
+        const formData = new FormData(form);
+        const selectedAnswers = {};
+
+        formData.forEach((value, key) => {
+            selectedAnswers[key] = value;
+        });
+
+        console.log(selectedAnswers);
+
+        fetch(`${baseUrl}/quiz/save-exam/`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({
+            'csrfmiddlewaretoken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            'message':  JSON.stringify(selectedAnswers)
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.result_url) {
+            window.location.href = data.result_url;
+          } else {
+              console.error('Failed to get result URL:', data);
+          }
+        })
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+      // Lấy tất cả các phần tử radio button
+      const radioButtons = document.querySelectorAll('.form-check-input');
+  
+      // Gắn sự kiện 'change' cho từng radio button
+      radioButtons.forEach(function(radioButton) {
+          radioButton.addEventListener('change', function() {
+              // Lấy ID của câu hỏi từ radio button
+              const questionId = this.name.split('_')[1];
+              
+              // Lấy ID của mục lục tương ứng
+              const tocItem = document.getElementById(`idx_question${questionId}`);
+  
+              // Thay đổi màu nền của mục lục
+              if (tocItem) {
+                  tocItem.style.backgroundColor = '#cce5ff'; 
+              }
+          });
+      });
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,187 @@
+
+{% extends 'layout.html' %}
+{% load static %}
+{% block title %}
+    Quiz
+{% endblock %}
+{% block style %}
+    <style>
+        .header-quiz {
+            height: 50px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="container" style="margin-top: 6rem;">
+    <div class="row static-top" style="height: 100vh;overflow: auto;
+    top: 6rem">
+        <div class="col-md-3 sticky-top bg-light" 
+        style="height: 100vh;overflow: auto;
+        top: 0">
+        <div class="row">
+            <div class="col-12 sticky-top py-3 bg-light header-quiz">
+                <h6 class="section-heading text-center">Các đề thi khác</h6>
+            </div>
+            {% for e in exams%}
+            <div class="col-12 p-2 border">
+                <a href="{% url 'quiz:view_quiz' e.id %}" class="nav-link exam-view">{{ e }}</a>
+            </div>
+            {%endfor%}
+        </div>
+        </div>
+        <div class="col-md-9 sticky-top" 
+        style="height: 100vh;overflow: auto;">
+            <div class="row">
+                <div class="row header-quiz sticky-top bg-light py-2">
+                    <div class="col-8">
+                        <h5 class="text-center m-2">{{exam.name}}</h5>
+                    </div>
+                    <div class="col-4 d-flex justify-content-end">
+                        <a href="{% url 'quiz:do_exam' exam.id %}">
+                            <button type="button" class="btn btn-primary">Làm đề</button>
+                        <a/>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <ul class="px-3">
+                        <li class="row py-3 mb-3">
+                            {% for question in exam.question_set.all%}                            
+                            <div class="col-12">
+                                <h6>Câu {{ forloop.counter }}: {{question.question}}</h6>
+                            </div>
+                            <div class="col-12">
+                                <div class="row">
+                                    <div class="col-12">A. {{question.choice_1}}</div>
+                                    <div class="col-12">B. {{question.choice_2}}</div>
+                                    <div class="col-12">C. {{question.choice_3}}</div>
+                                    <div class="col-12">D. {{question.choice_4}}</div>
+                                </div>
+                            </div>
+                            <div class="col-12 border rounded border-primary my-2 mb-5">
+                                <div class="row">
+                                    <div class="query d-none">{{question.question}} {{question.answer}}</div>
+                                    <div class="col-12 border-bottom bg-light rounded px-0">
+                                        <button class="btn btn-ans" style="width:100%">Xem đáp án</button>
+                                    </div>
+                                    <div class="col-12 py-3 answer d-none" style="transition-timing-function: linear;">
+                                        {% if question.choice_1 == question.answer %}
+                                            <b>Đáp án: A</b>
+                                        {% elif question.choice_2 == question.answer %}
+                                            <b>Đáp án: B</b>
+                                        {% elif question.choice_3 == question.answer %}
+                                            <b>Đáp án: C</b>
+                                        {% elif question.choice_4 == question.answer %}
+                                            <b>Đáp án: D</b>
+                                        {% else %}
+                                            <b>Đáp án: {{question.answer}}</b>
+                                        {% endif %}
+                                        <br>
+                                        <p class="text-primary">Thông tin thêm</p>
+                                        <div class="loader quiz-load d-none">
+                                            <div class="bar bar1"></div>
+                                            <div class="bar bar2"></div>
+                                            <div class="bar bar3"></div>
+                                        </div>
+                                        <div class="row"></div>
+                                            <div class="col-12">
+                                                <button type="button" class="btn-back text-primary btn btn-dark"><i class="fa fa-chevron-left" aria-hidden="true"></i></button>
+                                                <button type="button" class="btn-next text-primary btn btn-dark"><i class="fa fa-chevron-right" aria-hidden="true"></i></button>
+                                            </div>  
+                                        </div>
+                                </div>
+                            </div>
+                            {%endfor%}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% comment %} <script src="{% static '/js/quiz.js' %}"></script> {% endcomment %}
+<script>
+    var baseUrl = window.location.origin;
+    {% comment %} let exam_view = document.querySelectorAll('.exam-view')
+    exam_view.forEach(item => {
+        item.addEventListener('click', function(){
+            fetch(`${baseUrl}/quiz/view`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({
+                'csrfmiddlewaretoken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                'message': item.id
+                    })
+                })
+        })
+    }) {% endcomment %}
+    
+    document.querySelectorAll('.btn-ans').forEach(button => {
+        button.addEventListener('click', function() {
+            let rowDiv = this.closest('.col-12');
+            let answer = rowDiv.nextElementSibling;
+            let query_re = rowDiv.previousElementSibling
+            if (answer) {
+                let context = answer.querySelector('.row')
+                if (!context.textContent){
+                    let quiz_load = answer.querySelector('.quiz-load')
+                    quiz_load.classList.remove("d-none")
+                    fetch(`${baseUrl}/books/search/`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: new URLSearchParams({
+                        'csrfmiddlewaretoken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                        'message': query_re.textContent
+                        })
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            quiz_load.classList.add('d-none')
+                            data.data.forEach((item, index) => {
+                                if (index==0){
+                                    context.insertAdjacentHTML('beforeend',`<div class="col-12 bg-light mb-2 context-${index+1}">${item.content}</div>`)
+                                }else{
+                                    context.insertAdjacentHTML('beforeend',`<div class="col-12 bg-light d-none mb-2 context-${index+1}">${item.content}</div>`)
+                                }
+                            });
+                       
+                        }); 
+                }
+                if (!answer.classList.contains('d-none')) {
+                    answer.classList.add('d-none');
+                } else {
+                    answer.classList.remove('d-none');
+                }
+            }
+        });
+    });
+
+    document.querySelectorAll('.btn-next').forEach(button => {
+        button.addEventListener('click', function() {
+            let rowDiv = this.closest('.row');
+            console.log(rowDiv)
+            if (rowDiv) {
+                console.log('Found row:', rowDiv);
+                let context1 = rowDiv.querySelector('.context-1');
+                let context2 = rowDiv.querySelector('.context-2');
+                let context3 = rowDiv.querySelector('.context-3');
+                if (context1 && !context1.classList.contains('d-none')) {
+                    context1.classList.add("d-none");
+                    context2.classList.remove("d-none");
+                } else if (context2 && !context2.classList.contains('d-none')) {
+                    context2.classList.add("d-none");
+                    context3.classList.remove("d-none");
+                } else if (context3 && !context3.classList.contains('d-none')) {
+                    context3.classList.add("d-none");
+                    context1.classList.remove("d-none");
+                }
+            } else {
+                console.log('false');
+            }
+        });
+    });
+</script>
+
+{% endblock %}
+
+

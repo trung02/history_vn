@@ -19,7 +19,7 @@ def get_embeddings(text_list):
     model_output = model(**encoded_input)
     return cls_pooling(model_output)
 
-question = "hồ chí minh sinh ngày bao nhiêu"
+question = "chiến tranh thế giới thứ hai"
 question_embedding = get_embeddings([question]).cpu().detach().numpy()
 question_embedding.shape
 issues_dataset = load_dataset("json", data_files="dataset/data.json", split="train")

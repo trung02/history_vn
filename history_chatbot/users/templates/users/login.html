@@ -5,13 +5,31 @@
 {% endblock %}
 
 {% block content %}
-    <h1>Login</h1>
-    <form class="form-with-validation" action="/users/login/" method="post">
-        {% csrf_token %} 
-        {{ form }}
-        {% if request.GET.next %}
-            <input type="hiden" name="next" value="{{ request.GET.next }}" />
-        {% endif %}
-        <button class="form-submit">Submit</button>
+<section class="page-section bg-light" id="portfolio">
+    <div class="container p-3 m-auto" style="width:50%">
+        {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        <strong>Message:</strong> {{ message }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+    </div>
+    {% endfor %}
+
+    <h3>Log In to your account!</h3>
+    <form method="post" action="/users/login/" class="mb-2">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" class="form-control" id="username" name="username" placeholder="Enter Your Username" Required>
+        </div>
+        <div class="form-group">
+            <label for="pass1">Password</label>
+            <input type="password" class="form-control" id="pass1" name="pass1" placeholder="Enter Your Password" Required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Log In</button>
     </form>
+    </div>
+</section>
 {% endblock %}

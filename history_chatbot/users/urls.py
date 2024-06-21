@@ -1,11 +1,12 @@
-from django.urls import path
+from django.contrib import admin
+from django.urls import path, include
 from . import views
 
-
 app_name = "users"
-
 urlpatterns = [
-    path("register/", views.register_view, name="register"),
-    path("login/", views.login_view, name="login"),
-    path("logout/", views.logout_view, name="logout"),
+    path('', views.home, name='home'),
+    path('signup', views.signup, name='signup'),
+    path('activate/<uidb64>/<token>', views.activate, name='activate'),
+    path('signin', views.signin, name='signin'),
+    path('signout', views.signout, name='signout'),
 ]

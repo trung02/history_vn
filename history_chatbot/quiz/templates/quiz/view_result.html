@@ -1,0 +1,94 @@
+
+{% extends 'layout.html' %}
+{% load static %}
+{% block title %}
+    Quiz
+{% endblock %}
+{% block style %}
+    <style>
+        .header-quiz {
+            height: 50px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="container" style="margin-top: 6rem;">
+    {% for re in result%}
+        {{re.question.id}}
+    {% endfor %}
+   
+    <div class="row static-top" style="height: 100vh;overflow: auto;
+    top: 6rem">
+        <div class="col-md-3 sticky-top bg-light" 
+        style="height: 100vh;overflow: auto;
+        top: 0">
+        <div class="row">
+            <div class="col-12 sticky-top py-3 bg-light header-quiz">
+                <h6 class="section-heading text-center">Các đề thi khác</h6>
+            </div>
+            {% for e in exams%}
+            <div class="col-12 p-2 border">
+                <a href="{% url 'quiz:view_quiz' e.id %}" class="nav-link exam-view">{{ e }}</a>
+            </div>
+            {%endfor%}
+        </div>
+        </div>
+        <div class="col-md-9 sticky-top" 
+        style="height: 100vh;overflow: auto;">
+            <div class="row">
+                <div class="row header-quiz sticky-top bg-light py-2">
+                    <div class="col-8">
+                        <h5 class="text-center m-2">{{exam.name}}</h5>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <ul class="px-3">
+                        <li class="row py-3 mb-3">
+                            {% for question in exam.question_set.all%}                            
+                            <div class="col-12">
+                                <h6>Câu {{ forloop.counter }}: {{question.question}}</h6>
+                            </div>
+                            <div class="col-12">
+                                <div class="row">
+                                    {% if question.choice_1 == question.answer%}
+                                        <div class="col-12 border rounded py-2 my-1 border-success">A. {{question.choice_1}}</div>
+                                        <div class="col-12 border rounded py-2 my-1">B. {{question.choice_2}}</div>
+                                        <div class="col-12 border rounded py-2 my-1">C. {{question.choice_3}}</div>
+                                        <div class="col-12 border rounded py-2 my-1">D. {{question.choice_4}}</div>
+                                    {% elif question.choice_2 == question.answer %}
+                                        <div class="col-12 border rounded py-2 my-1">A. {{question.choice_1}}</div>
+                                        <div class="col-12 border rounded py-2 my-1 border-success">B. {{question.choice_2}}</div>
+                                        <div class="col-12 border rounded py-2 my-1">C. {{question.choice_3}}</div>
+                                        <div class="col-12 border rounded py-2 my-1">D. {{question.choice_4}}</div>
+                                    {% elif question.choice_3 == question.answer %}
+                                        <div class="col-12 border rounded py-2 my-1">A. {{question.choice_1}}</div>
+                                        <div class="col-12 border rounded py-2 my-1">B. {{question.choice_2}}</div>
+                                        <div class="col-12 border rounded py-2 my-1 border-success">C. {{question.choice_3}}</div>
+                                        <div class="col-12 border rounded py-2 my-1">D. {{question.choice_4}}</div>
+                                    {% elif question.choice_4 == question.answer %}
+                                        <div class="col-12 border rounded py-2 my-1">A. {{question.choice_1}}</div>
+                                        <div class="col-12 border rounded py-2 my-1">B. {{question.choice_2}}</div>
+                                        <div class="col-12 border rounded py-2 my-1">C. {{question.choice_3}}</div>
+                                        <div class="col-12 border rounded py-2 my-1 border-success">D. {{question.choice_4}}</div>
+                                    {% endif %} 
+                                </div>
+                            </div>
+                            <div class="col-12 border rounded border-primary my-2 mb-5">
+                                <div class="row">
+                                    <div class="query d-none">{{question.question}} {{question.answer}}</div>
+                                    <div class="col-12 bg-light rounded px-0">
+                                        <button class="btn btn-ans" style="width:100%">Xem hướng dẫn</button>
+                                    </div>
+                                </div>
+                            </div>
+                            {%endfor%}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{%endblock%}

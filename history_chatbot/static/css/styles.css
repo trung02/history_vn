@@ -600,7 +600,8 @@ progress {
 
 .img-fluid {
   max-width: 100%;
-  height: auto;
+  height: 23rem;
+
 }
 
 .img-thumbnail {
@@ -7934,6 +7935,9 @@ textarea.form-control-lg {
 .fs-6 {
   font-size: 1rem !important;
 }
+.fs-7 {
+  font-size: .8rem !important;
+}
 
 .fst-italic {
   font-style: italic !important;
@@ -10906,6 +10910,17 @@ p {
 #mainNav .navbar-nav .nav-item .nav-link.active, #mainNav .navbar-nav .nav-item .nav-link:hover {
   color: #ffc800;
 }
+.nav-link:hover {
+  color: #ffc800;
+}
+.chat-link {
+  text-decoration:none;
+  color: #000;
+}
+.chat-link:hover {
+  text-decoration:none;
+  color: #dc3545;
+}
 
 @media (min-width: 992px) {
   #mainNav {
@@ -10933,7 +10948,7 @@ p {
   }
   #mainNav.navbar-shrink .navbar-brand svg,
   #mainNav.navbar-shrink .navbar-brand img {
-    height: 1.5rem;
+    height: 2.5rem;
   }
   #mainNav .navbar-nav .nav-item {
     margin-right: 1rem;
@@ -10951,6 +10966,13 @@ header.masthead {
   background-repeat: no-repeat;
   background-attachment: scroll;
   background-position: center center;
+  background-size: cover;
+}
+.bg-login{
+  background-image:  url("../assets/img/login-bg.jpeg");
+  background-repeat: no-repeat, repeat;
+  background-attachment: scroll;
+  /* background-position: center center; */
   background-size: cover;
 }
 header.masthead .masthead-subheading {
@@ -11339,4 +11361,7 @@ section#contact form#contactForm :-ms-input-placeholder {
   text-align: center;
   font-size: 0.9rem;
   font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+.search-result {
+  width: 100%
 }

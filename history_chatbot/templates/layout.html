@@ -16,36 +16,115 @@
     <!-- Google fonts -->
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
     <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
     <!-- Core theme CSS (includes Bootstrap) -->
     <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
+    <style>
+      /* CSS cho hiệu ứng loading */
+      /* CSS cho animation loading */
+      .loader,
+      .bar {
+        width: 60px;
+        height: 20px;
+        margin: auto;
+        margin-top: 5px ;
+        margin-bottom: 5px ;
+      }
+      .bar {
+        position: absolute;
+        display: flex;
+        align-items: center;
+      }
+      .bar::before,
+      .bar::after {
+        content: "";
+        position: absolute;
+        display: block;
+        width: 10px;
+        height: 10px;
+        background: #fff;
+        background: #000;
+        opacity: 0;
+        box-shadow: 1px 1px 4px rgba(0,0,0,.15);
+        border-radius: 10px;
+        animation: slideleft 1s ease-in-out infinite;
+      }
+      
+      .bar1::before { animation-delay: 0.00s }
+      .bar1::after  { animation-delay: 0.1s }
+      .bar2::before { animation-delay: 0.40s }
+      .bar2::after  { animation-delay: 0.70s }
+      .bar3::before { animation-delay: 0.50s }
+      .bar3::after  { animation-delay: 0.30s }
+      
+      @keyframes slideleft {
+        10% { opacity: 0; transform: scale(0); right: 0 }
+        50% { opacity: 1; transform: scale(1) }
+        90% { opacity: 0; transform: scale(0); right: 100% }
+      }
+      
+    </style>
   </head>
   <body id="page-top">
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
-      <div class="container">
-        <a class="navbar-brand" href="/"><img src="{% static 'assets/img/navbar-logo.svg' %}" alt="..." /></a>
-        <form class="form-inline" style="display: flex;">
-          <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-        </form>
-
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="justify-content: center" id="mainNav">
+      <div class="container row">
+        <div class="col-2">
+        <a class="navbar-brand" href="/"><img src="{% static 'assets/img/logo.png' %}" alt="..." /></a>
+        </div>
+        <div class="col-6 px-0 bg-light rounded border">
+          <div class="position-relative">
+            <form class="form-inline"  style="display: flex;">
+              {% csrf_token %}
+              <input class="form-control mr-sm-2" id="search-input" placeholder="Tìm kiếm" aria-label="Search">
+              <button class="px-4 btn btn-outline-success my-2 my-sm-0" id="search-button"><i class="fa fa-search" aria-hidden="true"></i></button>
+            </form>
+            <div class="loader d-none">
+              <div class="bar bar1"></div>
+              <div class="bar bar2"></div>
+              <div class="bar bar3"></div>
+            </div>
+            <div class="position-absolute rounded-bottom bg-light border d-none" id="search-result" style="width: 100%">
+              <ul id="search-list" class="list-group">
+                {% comment %} <li class="list-group-item">
+                  <a>
+                    <div class="row">
+                      <div class="col-10 text-truncate font-italic">title</div>
+                      <div class="col-10 text-truncate font-weight-light">content </div>
+                    </div>
+                  </a>
+                  
+                </li>
+                <li class="list-group-item">
+                  <a>
+                    <div class="row">
+                      <div class="col-10 text-truncate font-italic">title</div>
+                      <div class="col-10 text-truncate font-weight-light">content </div>
+                    </div>
+                </li> {% endcomment %}
+              </ul>
+            </div>
+          </div>
+        </div>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
           Menu
           <i class="fas fa-bars ms-1"></i>
         </button>
-        <div class="collapse navbar-collapse" id="navbarResponsive">
+        <div class="collapse navbar-collapse col-4" id="navbarResponsive">
           <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
             {% comment %} <li class="nav-item">
               <a class="nav-link" href="/">Sách</a>
             </li> {% endcomment %}
-            <li class="nav-item">
-              <a class="nav-link" href="/about">Ôn tập</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/chatbot">Chat</a>
-            </li>
+            
             {% if user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link" href="/quiz">Ôn tập</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/chatbot"><i class="fa fa-comment" aria-hidden="true"></i> Chat</a>
+            </li>
               <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="collapse" href="#collapseAcc" role="button" aria-expanded="false" aria-controls="collapseAcc">{{user}}</a>
+                <a class="nav-link" data-bs-toggle="collapse" href="#collapseAcc" role="button" aria-expanded="false" aria-controls="collapseAcc"><i class="fa fa-user" aria-hidden="true"></i> {{user}}</a>
               <div class="collapse" id="collapseAcc">
                 <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0" style="flex-direction: column;">
                     <li class="nav-item">
@@ -55,11 +134,11 @@
                       <a class="nav-link" href="#">Đổi mật khẩu</a>
                     </li>
                     <li>
-                        <form action="{% url 'users:logout' %}" method="POST">
+                        <form action="{% url 'users:signout' %}" method="POST">
                             {% csrf_token %}
                             <button class="btn btn-link" aria-lable="User logout" title="User logout">
                                 <span>
-                                    <i class="fa-light fa-arrow-right-from-bracket text-white">đăng xuất</i>
+                                    <i class="fa-light fa-arrow-right-from-bracket text-white"><i class="fa fa-sign-out" aria-hidden="true"></i>đăng xuất</i>
                                 </span>
                                 
                             </button>
@@ -67,14 +146,18 @@
                     </li>
               </div>
             </li>
-
-              
             {% else %}
               <li class="nav-item">
-                <a class="nav-link" href="{% url 'users:login' %}">Đăng nhập</a>
+                <a class="nav-link" href="/quiz">Ôn tập</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="{% url 'users:register' %}">Đăng kí</a>
+                <a class="nav-link" href="/chatbot"><i class="fa fa-comment" aria-hidden="true"></i> Chat</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'users:signin' %}">Đăng nhập</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'users:signup' %}">Đăng kí</a>
               </li>
             {% endif %}
           </ul>
@@ -93,91 +176,8 @@
       </div>
     </section> {% endcomment %}
 
-    <div class="py-5">
-      <div class="container">
-        <div class="row align-items-center">
-          <div class="col-md-3 col-sm-6 my-3">
-            <a href="#!"><img class="img-fluid img-brand d-block mx-auto" src="{% static 'assets/img/logos/microsoft.svg' %}" alt="..." aria-label="Microsoft Logo" /></a>
-          </div>
-          <div class="col-md-3 col-sm-6 my-3">
-            <a href="#!"><img class="img-fluid img-brand d-block mx-auto" src="{% static 'assets/img/logos/google.svg' %}" alt="..." aria-label="Google Logo" /></a>
-          </div>
-          <div class="col-md-3 col-sm-6 my-3">
-            <a href="#!"><img class="img-fluid img-brand d-block mx-auto" src="{% static 'assets/img/logos/facebook.svg' %}" alt="..." aria-label="Facebook Logo" /></a>
-          </div>
-          <div class="col-md-3 col-sm-6 my-3">
-            <a href="#!"><img class="img-fluid img-brand d-block mx-auto" src="{% static 'assets/img/logos/ibm.svg' %}" alt="..." aria-label="IBM Logo" /></a>
-          </div>
-        </div>
-      </div>
-    </div>
-    <section class="page-section" id="contact">
-      <div class="container">
-        <div class="text-center">
-          <h2 class="section-heading text-uppercase">Contact Us</h2>
-          <h3 class="section-subheading text-muted">Lorem ipsum dolor sit amet consectetur.</h3>
-        </div>
-        <!-- * * * * * * * * * * * * * * * -->
-        <!-- * * SB Forms Contact Form * * -->
-        <!-- * * * * * * * * * * * * * * * -->
-        <!-- This form is pre-integrated with SB Forms. -->
-        <!-- To make this form functional, sign up at -->
-        <!-- https://startbootstrap.com/solution/contact-forms -->
-        <!-- to get an API token! -->
-        <form id="contactForm" data-sb-form-api-token="API_TOKEN">
-          <div class="row align-items-stretch mb-5">
-            <div class="col-md-6">
-              <div class="form-group">
-                <!-- Name input -->
-                <input class="form-control" id="name" type="text" placeholder="Your Name *" data-sb-validations="required" />
-                <div class="invalid-feedback" data-sb-feedback="name:required">A name is required.</div>
-              </div>
-              <div class="form-group">
-                <!-- Email address input -->
-                <input class="form-control" id="email" type="email" placeholder="Your Email *" data-sb-validations="required,email" />
-                <div class="invalid-feedback" data-sb-feedback="email:required">An email is required.</div>
-                <div class="invalid-feedback" data-sb-feedback="email:email">Email is not valid.</div>
-              </div>
-              <div class="form-group mb-md-0">
-                <!-- Phone number input -->
-                <input class="form-control" id="phone" type="tel" placeholder="Your Phone *" data-sb-validations="required" />
-                <div class="invalid-feedback" data-sb-feedback="phone:required">A phone number is required.</div>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="form-group form-group-textarea mb-md-0">
-                <!-- Message input -->
-                <textarea class="form-control" id="message" placeholder="Your Message *" data-sb-validations="required"></textarea>
-                <div class="invalid-feedback" data-sb-feedback="message:required">A message is required.</div>
-              </div>
-            </div>
-          </div>
-          <!-- Submit success message -->
-          <!--  -->
-          <!-- This is what your users will see when the form -->
-          <!-- has successfully submitted -->
-          <div class="d-none" id="submitSuccessMessage">
-            <div class="text-center text-white mb-3">
-              <div class="fw-bolder">Form submission successful!</div>To activate this form, sign up at
-              <br />
-              <a href="https://startbootstrap.com/solution/contact-forms">https://startbootstrap.com/solution/contact-forms</a>
-            </div>
-          </div>
-          <!-- Submit error message -->
-          <!--  -->
-          <!-- This is what your users will see when there is -->
-          <!-- an error submitting the form -->
-          <div class="d-none" id="submitErrorMessage">
-            <div class="text-center text-danger mb-3">Error sending message!</div>
-          </div>
-          <!-- Submit Button -->
-          <div class="text-center">
-            <button class="btn btn-primary btn-xl text-uppercase disabled" id="submitButton" type="submit">Send Message</button>
-          </div>
-        </form>
-      </div>
-    </section>
-    <footer class="footer py-4">
+    
+    <footer class="footer py-4 border-top">
       <div class="container">
         <div class="row align-items-center">
           <div class="col-lg-4 text-lg-start">Copyright &copy; Your Website 2023</div>
@@ -194,7 +194,68 @@
       </div>
     </footer>
     <script src="{% static 'js/scripts.js' %}"></script>
-    <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+    {% comment %} <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script> {% endcomment %}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      var searchInput = document.getElementById("search-input");
+      var searchResult = document.getElementById('search-result');
+      var searchList = document.querySelector('#search-list');
+      var searchButton = document.getElementById('search-button');
+      var searchResultP = searchResult.querySelector('p');
+      var loading = document.querySelector('.loader');
+      var baseUrl = window.location.origin;
+
+      document.addEventListener("DOMContentLoaded", function() {
+        searchButton.addEventListener('click', function() {
+          event.preventDefault();
+          loading.classList.remove("d-none")
+         
+          fetch(`${baseUrl}/books/search/`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({
+              'csrfmiddlewaretoken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+              'message': searchInput.value.trim()
+            })
+          })
+            .then(response => response.json())
+            .then(data => {
+              searchList.textContent=''
+              loading.classList.add("d-none")
+              data.data.forEach(item => {
+                  let searchItem = document.createElement('li');
+                  searchItem.innerHTML = `
+                    <a class="nav-link" href='${baseUrl}/read-book/${item.id_book}#${item.id}'>
+                      <div class="row">
+                        <div class="col-10 text-truncate font-italic">${item.title}</div>
+                        <div class="col-10 text-truncate font-weight-light">${item.content}</div>
+                      </div>
+                    </a>`
+                  searchItem.classList.add("list-group-item");
+                  searchList.appendChild(searchItem);
+              });
+              searchResult.classList.remove('d-none');
+            })
+            .catch(error => {
+              searchResult.classList.remove('d-none');
+              console.error('Error:', error);
+              let searchItem = document.createElement('li');
+              searchItem.innerHTML = `
+                <div class="row">
+                  <div class="col-10 text-truncate font-italic">Lỗi</div>
+                </div>`
+              searchItem.classList.add("list-group-item");
+              searchList.appendChild(searchItem);
+            });
+        });
+  
+        document.addEventListener('click', function(event) {
+          if (!searchResult.contains(event.target) && !searchButton.contains(event.target) && !searchInput.contains(event.target)) {
+            searchResult.classList.add('d-none');
+          }
+        });
+      });
+    </script>
   </body>
 </html>

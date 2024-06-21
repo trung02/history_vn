@@ -6,7 +6,17 @@
 
 {% block content %}
 <section class="page-section bg-light" id="portfolio">
-    <div class="container"> 
+
+    <div class="container" id="content"> 
+        <div class="row ">
+            <div class="col-1">lớp 6</div>
+            <div class="col-1">lớp 6</div>
+            <div class="col-1">lớp 6</div>
+            <div class="col-1">lớp 6</div>
+            <div class="col-1">lớp 6</div>
+            <div class="col-1">lớp 6</div>
+            <div class="col-1">lớp 6</div>
+        </div>
         <div class="row align-items-stretch mb-5 ">
             <div class="col-md-3 sticky-top" id="toc" style="
             height:100vh; 
@@ -17,22 +27,25 @@
                     <div class="col-12 sticky-top bg-light border-bottom mb-3">
                         <h4 class="section-heading text-center">Mục lục</h4>
                     </div>
-                    <div class="col-12">{% for chapter in chapters %}
+                    <div class="col-12 index">
+                        {% for chapter in chapters %}
                         <div class="nav-item">
-                            <a class="nav-link active" href="#{{chapter.id}}"> <h6 class="section-heading">Chương {{ forloop.counter }}: {{ chapter.name }}</h6> </a>
+                            <a class="nav-link" href="#{{chapter.id}}"> <h6 class="section-heading">Chương {{ forloop.counter }}: {{ chapter.name }}</h6> </a>
                         </div>
-                        {% for lesson in chapter.lesson_set.all %}
-                            <div class="nav-item">
-                                <a class="nav-link active" href="#{{lesson.id}}"><p>Bài {{ forloop.counter }}: {{ lesson.name }}</p></a>
-                            </div>
-                            {% for title in lesson.title_set.all %}
-                                <a class="nav-link active" href="#{{title.id}}"><p>{{ forloop.counter }}. {{ title.name }}</p></a>
+                            {% for lesson in chapter.lesson_set.all %}
+                                <div class="nav-item">
+                                    <a class="nav-link active" href="#{{lesson.id}}"><p>Bài {{ forloop.counter }}: {{ lesson.name }}</p></a>
+                                </div>
+                                {% for title in lesson.title_set.all %}
+                                    <div class="nav-item">
+                                        <a class="nav-link active" href="#{{title.id}}"><p>{{ forloop.counter }}. {{ title.name }}</p></a>
+                                    </div>
+                                {% endfor %}
                             {% endfor %}
-                        {% endfor %}
-                    {% endfor %} </div>
+                        {% endfor %} </div>
                 </div>
             </div>
-            <div class="col-md-9 px-5 bg-white" id="content">
+            <div class="col-md-9 px-5 bg-white" >
                 {% for chapter in chapters %}
                     <br><h4 class="text-center" id="{{chapter.id}}" class="section-heading text-uppercase">Chương {{ forloop.counter }}: {{ chapter.name }}</h3><br>
                     {% for lesson in chapter.lesson_set.all %}
@@ -48,63 +61,5 @@
         </div> 
     </div>
 </section> 
-
-
-
-
-
-
-
-
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Lấy danh sách các mục trong mục lục
-        const tocItems = document.querySelectorAll('#toc div a');
-    
-        // Lặp qua từng mục trong mục lục và gắn sự kiện cuộn
-        tocItems.forEach(function(item) {
-            item.addEventListener('click', function(e) {
-                e.preventDefault(); // Ngăn chặn hành vi mặc định của thẻ a
-    
-                // Lấy ID của phần nội dung tương ứng với mục mục lục được nhấp
-                const targetId = this.getAttribute('href').substring(1);
-                const targetElement = document.getElementById(targetId);
-    
-                // Cuộn trang đến phần nội dung tương ứng
-                if (targetElement) {
-                    targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-        });
-    
-        // Gắn sự kiện cuộn cho phần nội dung
-        document.getElementById('content').addEventListener('scroll', function() {
-            // Lấy vị trí hiện tại của thanh cuộn
-            const scrollPosition = this.scrollTop;
-    
-            // Lặp qua từng phần tử nội dung và kiểm tra xem nó có nằm trong vùng nhìn thấy không
-            document.querySelectorAll('#content > h5').forEach(function(section) {
-                if (scrollPosition >= section.offsetTop && scrollPosition < section.offsetTop + section.offsetHeight) {
-                    // Lấy ID của phần tử nội dung hiện tại
-                    const sectionId = section.getAttribute('id');
-    
-                    // Làm cho mục mục lục tương ứng được in đậm
-                    const activeTocItem = document.querySelector(`#toc ul li a[href="#${sectionId}"]`);
-                    if (activeTocItem) {
-                        // Xóa lớp 'active' từ tất cả các mục mục lục
-                        tocItems.forEach(function(item) {
-                            item.classList.remove('active');
-                        });
-    
-                        // Thêm lớp 'active' cho mục mục lục tương ứng
-                        activeTocItem.classList.add('active');
-                    }
-                }
-            });
-        });
-    });
-    
-</script>
     
 {% endblock %}

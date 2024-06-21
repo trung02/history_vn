@@ -1,0 +1,53 @@
+{% extends 'layout-login.html' %}
+
+{% block title %}
+  Tạo tài khoản mới
+{% endblock %}
+
+{% block content %}
+  <section class="bg-login page-section row" id="portfolio" style="height: 100vh;">
+    <div class="container col-12 py-3 px-5 m-auto rounded text-white bg-dark bg-opacity-50" style="width:60%;
+    box-shadow: 0 0 20px .2px  #ccc;">
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          <strong>Message:</strong> {{ message }}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+      {% endfor %}
+
+      <h3>Tạo tài khoản của bạn!</h3>
+      <form method="post" class="row" action="{% url 'users:signup' %}">
+        {% csrf_token %}
+        <div class="form-group col-12 py-2">
+          <label class="px-3" for="username">Tên đăng nhập</label>
+          <input type="text" class="form-control fs-7 py-2" id="username" name="username" placeholder="Tạo tên đăng nhập (chỉ sử dụng chữ và số)" Required />
+        </div>
+        <div class="row py-2 mx-0">
+          <div class="form-group col-6 ps-0">
+            <label class="px-3 " for="fname">Họ tên</label>
+            <input type="text" class="form-control fs-7 py-2" id="fname" name="fname" placeholder="Nhập họ tên của bạn" Required />
+          </div>
+          <div class="form-group col-6 pe-0">
+            <label class="px-3" for="lname">Tên</label>
+            <input type="text" class="form-control fs-7 py-2" id="lname" name="lname" placeholder="Nhập tên của bạn" Required />
+          </div>
+        </div>
+        <div class="form-group col-12 py-2">
+          <label class="px-3" for="email">Email</label>
+          <input type="email" class="form-control fs-7 py-2" id="email" name="email" placeholder="Nhập địa chỉ Email của bạn" Required />
+        </div>
+        <div class="form-group col-12 py-2">
+          <label class="px-3" for="pass1">Mật khẩu</label>
+          <input type="password" class="form-control fs-7 py-2" id="pass1" name="pass1" placeholder="Tạo mật khẩu của bạn" Required />
+        </div>
+        <div class="form-group col-12 py-2">
+          <label class="px-3" for="pass2">Xác nhận mật khẩu</label>
+          <input type="password" class="form-control fs-7 py-2" id="pass2" name="pass2" placeholder="Xác nhận mật khẩu của bạn" Required />
+        </div>
+        <div class="col-12 py-3">
+            <button type="submit" class="btn btn-success col-12">Đăng ký</button>
+        </div>
+      </form>
+    </div>
+  </section>
+{% endblock %}

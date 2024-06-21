@@ -30,7 +30,10 @@ urlpatterns = [
     path("users/", include("users.urls")),
     path("books/", include("books.urls")),
     path("chatbot/", include("chatbot.urls")),
+    path("quiz/", include("quiz.urls")),
 
 ]
-
+admin.site.site_header = 'HistoryVN Administration'                    # default: "Django Administration"
+admin.site.index_title = 'Site administration'                 # default: "Site administration"
+admin.site.site_title = 'HistoryVN site admin' # default: "Django site admin"
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

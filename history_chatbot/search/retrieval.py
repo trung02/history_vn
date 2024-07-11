@@ -21,23 +21,24 @@ def get_embeddings(text_list):
 
 question = "chiến tranh thế giới thứ hai"
 question_embedding = get_embeddings([question]).cpu().detach().numpy()
-question_embedding.shape
-issues_dataset = load_dataset("json", data_files="dataset/data.json", split="train")
-issues_dataset.load_faiss_index('embeddings', 'dataset/history_index.faiss')
-scores, samples = issues_dataset.get_nearest_examples(
-    "embeddings", question_embedding, k=5
-)
+print(question_embedding)
+# question_embedding.shape
+# issues_dataset = load_dataset("json", data_files="dataset/data.json", split="train")
+# issues_dataset.load_faiss_index('embeddings', 'dataset/history_index.faiss')
+# scores, samples = issues_dataset.get_nearest_examples(
+#     "embeddings", question_embedding, k=5
+# )
 
-samples_df = pd.DataFrame.from_dict(samples)
-samples_df["scores"] = scores
-samples_df.sort_values("scores", ascending=True, inplace=True)
-for _, row in samples_df.iterrows():
-    print(f"TITLE: {row.title}")
-    print(f"SCORE: {row.scores}")
-    print(f"CONTEXT: {row.content}")
-    print(f"CONTEXT: {row.type}")
-    print("=" * 50)
-    print()
+# samples_df = pd.DataFrame.from_dict(samples)
+# samples_df["scores"] = scores
+# samples_df.sort_values("scores", ascending=True, inplace=True)
+# for _, row in samples_df.iterrows():
+#     print(f"TITLE: {row.title}")
+#     print(f"SCORE: {row.scores}")
+#     print(f"CONTEXT: {row.content}")
+#     print(f"CONTEXT: {row.type}")
+#     print("=" * 50)
+#     print()
 
 
 def rerank():
@@ -54,4 +55,6 @@ def rerank():
     result["contents"] = samples["content"]
     result["scores"] = doc_scores
     return result
+
+
     

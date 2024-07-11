@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Bar with Filtering</title>
+    <style>
+        #search-container {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        #search-input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #search-button {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #content {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            height: 300px;
+            overflow-y: auto;
+        }
+
+        .highlight {
+            background-color: yellow;
+        }
+    </style>
+</head>
+<body>
+    <div id="search-container">
+        <input type="text" id="search-input" placeholder="Enter search term">
+        <button id="search-button">Search</button>
+    </div>
+
+    <div id="content">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sed mauris id quam tincidunt ullamcorper sit amet non quam. Sed sed nibh eget nibh faucibus condimentum. Nullam id neque vel ligula faucibus faucibus. Nam et sem eget mauris euismod tristique. Morbi sit amet risus leo, eget tincidunt enim pharetra. In hac habitasse platea dictumst. Vivamus et enim eget leo semper faucibus. Cras ac justo in elit mollis congue. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Sed et orci lectus, nec tincidunt enim pharetra et. Nam eget neque vel ligula faucibus faucibus. Nulla facilisi. Nam ac ligula eget nunc tristique hendrerit. Morbi semper elit sit amet purus tincidunt bibendum. Praesent euismod quam eget augue porta, vitae semper nulla bibendum. Donec at magna vel lectus interdum mattis. Mauris sit amet neque velit, euismod bibendum lorem.
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
